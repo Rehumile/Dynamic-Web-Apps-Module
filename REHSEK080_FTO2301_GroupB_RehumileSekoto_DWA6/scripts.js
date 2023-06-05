@@ -4,12 +4,14 @@ import {
   genres,
   books,
   html,
+  RGBValues,
 } from "./data.js";
 import {
   populateDropdownMenu,
   setThemeColors,
   createPreviewFragment,
   displayBooks,
+  bookFiltering,
 } from "./functions.js";
 
 // Data
@@ -82,14 +84,8 @@ const toggleLightAndDarkModeHandler = (event) => {
   const formData = new FormData(event.target);
   const { theme } = Object.fromEntries(formData);
 
-  if (theme === "night") {
-    document.documentElement.style.setProperty("--color-dark", "255, 255, 255");
-    document.documentElement.style.setProperty("--color-light", "10, 10, 20");
-  } else {
-    document.documentElement.style.setProperty("--color-dark", "10, 10, 20");
-    document.documentElement.style.setProperty("--color-light", "255, 255, 255");
-  }
-
+  document.documentElement.style.setProperty('--color-dark', RGBValues[theme].dark);
+  document.documentElement.style.setProperty('--color-light', RGBValues[theme].light);
   html.settings.overlay.open = false;
 };
 
@@ -168,7 +164,7 @@ const closeBookPreviewHandler = () => {
  * @param {Event} event
  */
 
-const filterBooksHandler = (event) => {
+const filterSubmissionHandler = (event) => {
   html.search.overlay.style.display = "none";
   event.preventDefault();
 
@@ -177,40 +173,10 @@ const filterBooksHandler = (event) => {
   const selectedGenre = filters.genre;
   const selectedAuthor = filters.author;
   const selectedTitle = filters.title;
-  let results = [];
 
-  if (
-    selectedTitle === "" &&
-    selectedGenre === "any" &&
-    selectedAuthor === "any"
-  ) {
-    results = books;
-  } else {
-    for (const book of books) {
-      const macthesTitle =
-        selectedTitle.trim() === "" ||
-        book.title.toLowerCase().includes(selectedTitle.toLowerCase());
 
-      const matchesAuthor =
-        selectedAuthor === "any" || book.author === selectedAuthor;
+  matches = bookFiltering(books, selectedTitle, selectedGenre, selectedAuthor)
 
-      let matchesGenre = false;
-
-      for (const genre of book.genres) {
-        if (selectedGenre === "any") {
-          matchesGenre = true;
-        } else if (genre === selectedGenre) {
-          matchesGenre = true;
-        }
-      }
-
-      if (macthesTitle && matchesAuthor && matchesGenre) {
-        results.push(book);
-      }
-    }
-  }
-
-  matches = results;
 
   if (matches.length === 0) {
     html.list.message.style.display = "block";
@@ -223,7 +189,7 @@ const filterBooksHandler = (event) => {
   html.list.button.disabled = false;
 
   html.list.item.innerHTML = "";
-  html.list.item.appendChild(createPreviewFragment(results, range));
+  html.list.item.appendChild(createPreviewFragment(matches, range));
   addBookPreviewHandler();
 
   displayBooks(matches, page);
@@ -273,9 +239,9 @@ addBookPreviewHandler();
 
 // EVENT LISTENERS
 
-html.search.cancel.addEventListener("click", openSearchOverlayHandler);
+html.other.search.addEventListener("click", openSearchOverlayHandler);
 
-html.other.search.addEventListener("click", closeSearchOverlayHandler);
+html.search.cancel.addEventListener("click", closeSearchOverlayHandler);
 
 html.other.settings.addEventListener("click", openSettingsOverlayHandler);
 
@@ -289,4 +255,68 @@ html.preview.close.addEventListener("click", closeBookPreviewHandler);
 
 html.list.item.addEventListener("click", showBookPreviewHandler);
 
-html.search.form.addEventListener("submit", filterBooksHandler);
+html.search.form.addEventListener("submit", filterSubmissionHandler);
+
+
+// import { books, authors, genres, BOOKS_PER_PAGE } from './data.js';
+// // Helper function to create an element with attributes and innerHTML
+// function createElementWithAttributes(tag, attributes, innerHTML) {
+//   const element = document.createElement(tag);
+//   for (const [key, value] of Object.entries(attributes)) {
+//     element.setAttribute(key, value);
+//   }
+//   element.innerHTML = innerHTML;
+//   return element;
+// }
+// // Helper function to create option elements
+// function createOptionElement(value, text) {
+//   const attributes = {
+//     value: value,
+//   };
+//   return createElementWithAttributes('option', attributes, text);
+// }
+// // Helper function to create preview elements
+// function createPreviewElement(book) {
+//   const { author, id, image, title } = book;
+//   const element = createElementWithAttributes('button', {
+//     class: 'preview',
+//     'data-preview': id,
+//   });
+//   element.innerHTML = `
+//     <img class="preview__image" src="${image}" />
+//     <div class="preview__info">
+//       <h3 class="preview__title">${title}</h3>
+//       <div class="preview__author">${authors[author]}</div>
+//     </div>
+//   `;
+//   return element;
+// }
+// // Function to initialize the page
+// function initializePage() {
+//   let page = 1;
+//   let matches = books;
+//   const starting = document.createDocumentFragment();
+//   for (const book of matches.slice(0, BOOKS_PER_PAGE)) {
+//     const element = createPreviewElement(book);
+//     starting.appendChild(element);
+//   }
+//   document.querySelector('[data-list-items]').appendChild(starting);
+//   const genreHtml = document.createDocumentFragment();
+//   const firstGenreElement = createOptionElement('any', 'All Genres');
+//   genreHtml.appendChild(firstGenreElement);
+//   for (const [id, name] of Object.entries(genres)) {
+//     const element = createOptionElement(id, name);
+//     genreHtml.appendChild(element);
+//   }
+//   document.querySelector('[data-search-genres]').appendChild(genreHtml);
+//   const authorsHtml = document.createDocumentFragment();
+//   const firstAuthorElement = createOptionElement('any', 'All Authors');
+//   authorsHtml.appendChild(firstAuthorElement);
+//   for (const [id, name] of Object.entries(authors)) {
+//     const element = createOptionElement(id, name);
+//     authorsHtml.appendChild(element);
+//   }
+//   document.querySelector('[data-search-authors]').appendChild(authorsHtml);
+//   const prefersDarkTheme = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+//   if (prefersDarkTheme) {
+//     document.querySelector('[data-settings-theme]').value = 'night';

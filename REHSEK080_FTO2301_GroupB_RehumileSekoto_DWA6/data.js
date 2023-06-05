@@ -1,9 +1,29 @@
 
 export const BOOKS_PER_PAGE = 36;
 
+/**
+     * This object literal stores the settings of the colors of the dark and night mode in 'RGB' form. 
+     * This will update the css settings when user chooses between dark and night mode
+     * @type {Object}
+     */
+export const RGBValues = { 
+  day: {
+      dark: '10, 10, 20',
+      light: '255, 255, 255',
+  },
+  
+  night :{
+      dark: '255, 255, 255',
+      light: '10, 10, 20',
+  }
+  }
 
 /**
- * An object literal that contains references to the all the HTML elements referenced through the operation of the web app either upon initialisation or while itr running (via event listeners). This will ensure that all the user interface elements can be access and seen in a structured manner in a single data structure
+ * An object literal that contains references to the all the HTML elements 
+ * referenced through the operation of the web app either upon initialisation 
+ * or while its running (via event listeners). T
+ * his will ensure that all the user interface elements can be 
+ * access and seen in a structured manner in a single data structure
  */
 export const html = {
   list: {

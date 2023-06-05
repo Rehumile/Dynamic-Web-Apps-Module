@@ -1,4 +1,5 @@
-import { BOOKS_PER_PAGE, authors, html } from "./data.js";
+import { BOOKS_PER_PAGE, authors, html} from "./data.js";
+
 
 /**
  * A function that takes a book as an object literal and
@@ -30,7 +31,9 @@ export const createPreview = (props) => {
 };
 
 /**
- * This function will take the books object and the book range as parameters. It will create a document Fragment whereby all the book previews made from the createPreview function will be looped through and added to the document fragment
+ * This function will take the books object and the book range as parameters. 
+ * It will create a document Fragment whereby all the book previews made from the 
+ * createPreview function will be looped through and added to the document fragment
  * @param {Array} booksArray
  * @param {number} bookRange
  * @returns {DocumentFragment}
@@ -63,7 +66,9 @@ export const setThemeColors = (theme) => {
 };
 
 /**
- * The purpose of this function is to add the values of the genres and authors objects into the drop down menu . Although it is for the population of the form select of the authors and genre object, this function can be reused for other form selects
+ * The purpose of this function is to add the values of the genres and authors objects into the drop down menu .
+ * Although it is for the population of the form select of the authors and genre object, 
+ * this function can be reused for other form selects
  * @param {Object} objectSource - object from where the values will be created
  * @param {String} formLabel - The title of the form select
  * @param {Node} formSource - Dom node which is where the values will be appended to
@@ -112,3 +117,49 @@ export const displayBooks = (booksArray, bookPage) => {
     html.list.button.disabled = true;
   }
 };
+/**
+ * The responsiblity of this function is to filter books. It takes the books Array
+ * as a parameter as well as the author, title and genre selected by the user.
+ * Although this function is used to filter the book, it can be used to filter other
+ * Array Objects in the future
+ * @param {Array} booksArray 
+ * @param {String} Title 
+ * @param {Object} Genre 
+ * @param {Object} Author 
+ * @returns {Array}
+ */
+export const bookFiltering = (booksArray, Title, Genre, Author) => {
+  let results = [];
+  if (
+    Title === "" &&
+    Genre === "any" &&
+    Author === "any"
+  ) {
+    results = booksArray;
+  } else {
+    for (const book of booksArray) {
+      const macthesTitle =
+        Title.trim() === "" ||
+        book.title.toLowerCase().includes(Title.toLowerCase());
+
+      const matchesAuthor =
+        Author === "any" || book.author === Author;
+
+      let matchesGenre = false;
+
+      for (const genre of book.genres) {
+        if (Genre === "any") {
+          matchesGenre = true;
+        } else if (genre === Genre) {
+          matchesGenre = true;
+        }
+      }
+
+      if (macthesTitle && matchesAuthor && matchesGenre) {
+        results.push(book);
+      }
+    }
+  }
+return results
+}
+
