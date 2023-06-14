@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tally Count</title>
+
+         <link rel="stylesheet" href="./styles.css"> 
+
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500&family=Roboto:wght@400;900&display=swap" rel="stylesheet">
+
+        <script src="scripts.js" defer></script>
+
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.4.0/dist/themes/light.css" />
+<script type="module" src="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.4.0/dist/shoelace-autoloader.js"></script>
+</head>
+<body>
+  <header class="header">
+    <h1 class="header__title">
+        Tally Count
+    </h1>
+  </header>  
+
+    <main class="counter">
+        <sl-dialog label="Dialog" class="dialog" style="--width: 50vw;" data-overlay>
+            The counter has been reset to zero.
+            <sl-button slot="footer" variant="primary">Close</sl-button>
+          </sl-dialog>
+
+        <sl-button class="reset"  data-reset >Reset</sl-button>
+        <sl-input class="counter__value" readonly value="0" data-number></sl-input>
+        <div class="counter__actions">
+          <sl-button class="button subtract"  data-subtract>-</sl-button>
+          <sl-button class="button add"  data-add>+</sl-button>
+        </div>
+        
+        <style>
+            :root{
+    --color-green: #31c48d;
+    --color-white: #fff;
+    --color-dark-grey: #33333d;
+    --color-medium-grey: #424250;
+    --color-light-grey: #9ca3ae;
+}
+
+
+sl-dialog::part(body) {
+    color: #000;
+}
+
+
+    sl-input.counter__value::part(input) {
+        height: 15rem;
+        width: 100%;
+        font-size: 6rem;
+        text-align: center;
+        font-weight: 400;
+        background: none;
+        color: var(--color-white);
+        border-bottom: 1px solid var(--color-light-grey)
+    }
+
+sl-input.counter__value::part(base) {
+    height: 15rem;
+    background: none;
+    border-width: 0;
+}
+.counter__actions {
+    display: flex; 
+    justify-content: center;
+}
+
+  sl-button.button::part(prefix){
+    padding: 75px;
+  }
+  sl-button.button::part(suffix){
+    padding: 75px;
+  }
+
+  sl-button.reset::part(base) {
+    --sl-input-height-medium: 30px;
+    --sl-input-border-width: 1px;
+    background-color: transparent;
+    border: none;
+    color: var(--color-white);
+    font-size: 1rem;
+    font-weight: 400;
+    text-decoration: underline;
+    
+  }
+
+   sl-button.reset::part(base):hover {
+    color:var(--color-green)
+  }
+
+
+  sl-button.reset::part(base):active {
+    transform: scale(1.075) translateY(2px);
+    transition: 0.3ms;
+  }
+
+
+  sl-button.button::part(base) {
+      width: 100%;
+    height: 10rem;
+    border: none;
+    background-color: transparent;
+    color: var(--color-white);
+    font-size: 3rem;
+    align-items: center;
+    transition: transform 0.1s;
+  transform: translateY(0);
+  
+  }
+
+   sl-button.add::part(base){
+   border-left: 1px solid var(--color-light-grey);
+   border-radius: 0;
+   
+  }
+
+  sl-button.button::part(base):hover {
+      color:var(--color-green)
+  }
+
+   sl-button.button::part(base):disabled {
+    opacity: 0.2;
+}
+
+        </style>
+
+      </main>
+    
+    <footer class="footer">
+        Inspired by <a href="#" class="footer__link">Tally Count App</a>. Note that this is merely a student practice project for learning JavaScript.
+    </footer>
+</body>
+</html>
