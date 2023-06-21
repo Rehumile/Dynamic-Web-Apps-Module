@@ -14,7 +14,12 @@
 
         <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500&family=Roboto:wght@400;900&display=swap" rel="stylesheet">
 
-        <script src="/scripts.js" defer></script>
+        <script src="/scripts.js" defer type="module"></script>
+
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.5.0/cdn/themes/light.css" />
+        
+        <script type="module" src="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.5.0/cdn/shoelace-autoloader.js"></script>
+
 </head>
 <body>
   <header class="header">
@@ -22,33 +27,9 @@
         Tally Count
     </h1>
   </header>  
-    <!--<aside class="controls">
-        <label>
-            <span>Display</span>
-            <select>
-                <option>Single</option>
-                <option>Multiple</option>
-            </select>
-        </label>
-        <label>
-            <span>Counter</span>
-            <select>
-                <option>Counter 1</option>
-                <option>Counter 2</option>
-                <option>Counter 3</option>
-            </select>
-        </label>
-
-        <button>Settings</button>
-    </aside>-->
     
     <main class="counter">
-        <input class="counter__value" readonly value="0" data-key="number">
-
-        <div class="counter__actions">
-            <button class="counter__button counter__button_first" data-key="subtract">-</button>
-            <button class="counter__button" data-key="add">+</button>
-        </div>
+        <tally-counter></tally-counter>
     </main>
     
     <footer class="footer">
