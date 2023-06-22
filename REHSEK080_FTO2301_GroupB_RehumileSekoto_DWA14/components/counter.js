@@ -1,13 +1,15 @@
-import { LitElement, html, css} from "../libs/lit-html.js"
-
+import { LitElement, html, css } from "../libs/lit-html.js";
+/**
+ * @type {Object}
+ */
 const counterStates = {
   NORMAL: "normal",
   MAXIMUM: "maximum",
-  MINIMUM: "minimum"
-}
+  MINIMUM: "minimum",
+};
 
 export class TallyCountElement extends LitElement {
-    static styles = css`
+  static styles = css`
     :root{
         --color-green: #31c48d;
         --color-white: #fff;
@@ -15,12 +17,12 @@ export class TallyCountElement extends LitElement {
         --color-medium-grey: #424250;
         --color-light-grey: #9ca3ae;
     }
-    /* Controls */
+ 
 .controls {
     background: yellow;
 }
 
-/* Counter */
+
 .counter {
     background: var(--color-dark-grey);
 }
@@ -37,7 +39,7 @@ export class TallyCountElement extends LitElement {
     border-bottom: 1px solid var(--color-light-grey);
 }
 .counter__actions {
-    display: flex; /*For the button to be next to each other*/
+    display: flex;
 }
 
 .counter__button {
@@ -51,6 +53,10 @@ export class TallyCountElement extends LitElement {
     transition: transform 0.1s;
     transform: translateY(0);
 }
+.counter__button:hover {
+  color:var(--color-green)
+}
+
 
 .counter__button:active {
     background: var(--color-medium-grey);
@@ -73,7 +79,9 @@ export class TallyCountElement extends LitElement {
   border: 0;
   display: flex;
   flex-direction: column;
-  height: 8rem
+  height: 8rem;
+  align-items: center;
+  justify-content: space-evenly;
   
 }
 
@@ -86,6 +94,7 @@ export class TallyCountElement extends LitElement {
   font-size: 1rem;
   font-weight: 400;
   text-decoration: underline;
+  margin-left: 1rem;
   
 }
 
@@ -99,86 +108,117 @@ export class TallyCountElement extends LitElement {
   transition: 0.3ms;
 }
 .closebutton {
-  background-color: var(--color-green)
-  padding: 2rem;
+  background-color: #31c48d;
   font-size: 1rem;
-  align-items: center
+  padding: 0.5rem;
+  align-items: center;
+  width: 40%;
+  border: 1px solid #424250;
 }
+ `;
 
-    
-        `
+  static properties = {
+    count: { type: String },
+    showDialog: { type: Boolean, state: true },
+    max: { type: Number },
+    min: { type: Number },
+    state: { type: String },
+  };
 
-    static properties =  {
-      count: { type: String },
-      showDialog: { type: Boolean, state:true },
-      max: {type: Number},
-      min: {type:Number},
-      state: {type: String}
-    };
+  constructor() {
+    super();
+    this.count = "0";
+    this.showDialog = false;
+    this.min = -15;
+    this.max = 15;
+    this.state = counterStates.NORMAL;
+  }
 
-    constructor() {
-        super();
-        this.count  = '0'
-        this.showDialog = false
-        this.min = -15;
-        this.max = 15,
-        this.state = counterStates.NORMAL
-    }
-
-    render() {
-        return html`
-        <button class="reset"  data-reset @click=${this.resetCounter}>Reset</button>
-        ${this.showDialog
-          ? html `
-      <sl-dialog label="Dialog" class="dialog-width" style="--width: 50vw;">
-      The counter has been reset to zero
-  <sl-button slot="footer" variant="primary" @click=${this.closeDialog}>Close</sl-button>
-</sl-dialog>
+  /**@returns {any} */
+  render() {
+    return html`
+      <button class="reset" data-reset @click=${this.resetCounter}>
+        Reset
+      </button>
+      ${this.showDialog
+        ? html`
+            <dialog label="Dialog" class="message">
+              <p>The counter has been reset to zero</p>
+              <button class="closebutton" @click=${this.closeDialog}>
+                Close
+              </button>
+            </dialog>
           `
-          : ''}
-        
-    <input class="counter__value" readonly value="${this.count}" data-number>
-    <div class="counter__actions">
-      <button ?disabled=${this.state === counterStates.MINIMUM} @click=${this.decrementCounter} class="counter__button counter__button_first"  data-subtract >-</button>
-      <button ?disabled=${this.state === counterStates.MAXIMUM} @click=${this.incrementCounter} class="counter__button"  data-add >+</button>
-    </div>
-        `;
-    }
-    toggleOpen() {
-      this.showDialog = !this.showDialog;
-    }
+        : ""}
 
-   incrementCounter() {
-    let number = parseInt(this.count)
-   number = number + 1
-   number === this.max
+      <input
+        class="counter__value"
+        readonly
+        value="${this.count}"
+        data-number
+      />
+      <div class="counter__actions">
+        <button
+          ?disabled=${this.state === counterStates.MINIMUM}
+          @click=${this.decrementCounter}
+          class="counter__button counter__button_first"
+          data-subtract
+        >
+          -
+        </button>
+        <button
+          ?disabled=${this.state === counterStates.MAXIMUM}
+          @click=${this.incrementCounter}
+          class="counter__button"
+          data-add
+        >
+          +
+        </button>
+      </div>
+    `;
+  }
+
+  /**
+   * Handler that is invoked when user clicks on "+" button
+   */
+  incrementCounter() {
+    let number = parseInt(this.count);
+    number = number + 1;
+    number === this.max
       ? (this.state = counterStates.MAXIMUM)
       : (this.state = counterStates.NORMAL);
-    this.count = number.toString()
-    console.log(number)
-   }
+    this.count = number.toString();
+  }
 
-   decrementCounter() {
-    let number = parseInt(this.count)
-    number = number - 1
+  /**
+   * Handler that is invoked when user clicks on "-" button
+   */
+  decrementCounter() {
+    let number = parseInt(this.count);
+    number = number - 1;
     number === this.min
-       ? (this.state = counterStates.MINIMUM)
-       : (this.state = counterStates.NORMAL);
-     this.count = number.toString()
-   }
+      ? (this.state = counterStates.MINIMUM)
+      : (this.state = counterStates.NORMAL);
+    this.count = number.toString();
+  }
 
-   resetCounter() {
-    const dialog = this.renderRoot.querySelector('.message');
+  /**
+   * Handler that is invoked when user clicks on "Reset" button
+   */
+  resetCounter() {
+    const dialog = this.renderRoot.querySelector(".message");
     this.state = counterStates.NORMAL;
-    this.count = '0';
-    this.toggleOpen();
+    this.count = "0";
+    this.openDialog();
+  }
+  
+  openDialog() {
+    this.showDialog = !this.showDialog;
+  }
 
-    console.log(dialog)
-   }
-
-   closeDialog() {
+  closeDialog() {
     this.showDialog = false;
-   }
+  }
 }
 
-customElements.define('tally-counter', TallyCountElement )
+customElements.define("tally-counter", TallyCountElement);
